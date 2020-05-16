@@ -1,16 +1,17 @@
 <template>
-	<div>
+	<div class="itemTracker">
 		<p>gonna be some tracker</p>
-		<item item-key="kokiriSword"/>
-		<item item-key="masterSword"/>
+		<item v-for="(key, index) in itemKeys" :key="index"
+			:item-key="key"
+		/>
 	</div>
 </template>
 
 <script lang="ts">
 	import Vue from 'vue'
-	import {Component, Provide} from "~/node_modules/nuxt-property-decorator";
+	import {Component} from "~/node_modules/nuxt-property-decorator";
 	import Item from "~/components/Item.vue";
-	import ItemData from "~/interfaces/ItemData";
+	import {Getter} from "nuxt-class-component";
 
 	@Component({
 		components: {
@@ -18,6 +19,7 @@
 		}
 	})
 	export default class ItemTracker extends Vue {
+		@Getter('itemSelection/getKeys') itemKeys: string[];
 
 	}
 </script>

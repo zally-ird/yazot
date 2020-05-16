@@ -2,9 +2,11 @@
 	<div
 		@contextmenu.prevent="onContextmenuDecrement"
 		@click="onClickIncrement"
+		class="item"
 	>
-		<p>{{item.name}}</p>
-		<h3>selected: {{item.steps[item.selected].value}}</h3>
+		<img :src="imageLink">
+		<p>{{getItem(selection.steps[selection.index].itemId).name}}</p>
+		<h3>selected: {{selection.steps[selection.index].value}}</h3>
 	</div>
 </template>
 
@@ -12,6 +14,7 @@
 	import Vue from 'vue'
 	import {Action, Component, Getter, Prop, Provide} from "~/node_modules/nuxt-property-decorator";
 	import ItemData from "~/interfaces/ItemData";
+	import ItemSelection from "~/interfaces/ItemSelection";
 
 	@Component
 	export default class Item extends Vue {
@@ -20,14 +23,20 @@
 
 		@Provide() test: number = 50;
 
-		@Getter('items/getItem') getItem: (itemKey: string) => ItemData;
+		@Getter('items/getItem') getItem: (itemId: string) => ItemData;
 
-		@Action('items/incrementSelected') incrementSelected: (itemKey: string) => void;
+		@Getter('itemSelection/getSelection') getSelection: (itemKey: string) => ItemSelection;
 
-		@Action('items/decrementSelected') decrementSelected: (itemKey: string) => void;
+		@Action('itemSelection/incrementSelected') incrementSelected: (itemKey: string) => void;
 
-		get item(): ItemData {
-			return this.getItem(this.itemKey);
+		@Action('itemSelection/decrementSelected') decrementSelected: (itemKey: string) => void;
+
+		get selection(): ItemSelection {
+			return this.getSelection(this.itemKey);
+		}
+
+		get imageLink() {
+			return this.getItem(this.selection.steps[this.selection.index].itemId).image;
 		}
 
 		onContextmenuDecrement() {
